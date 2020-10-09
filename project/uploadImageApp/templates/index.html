@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title></title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.ccodeom/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+ 
+  <script>
+    function showLoader(){
+      var loader = document.getElementById("waitDiv");
+      uploadBtn = document.getElementById('btnSubmit')
+      input = document.getElementById('imageInput');
+      imageSize= input.files[0].size
+
+      if (imageSize > 0){
+        if(loader.style.display === "none"){
+        loader.style.display = "block"
+        uploadBtn.disabled = true;
+        } 
+        else {
+          loader.style.display = "none"
+          uploadBtn.disabled = false;
+        }
+
+      }
+      else{
+        alert("Please select image first.")
+      }
+      
+    }
+
+    function VerifyFileNameAndFileSize(){
+      var input, file;
+      input = document.getElementById('imageInput');
+      uploadBtn = document.getElementById('btnSubmit')
+      imageSize= input.files[0].size
+      if(imageSize > 100000){
+        alert("Image size should not be more than 100 kb.")
+        uploadBtn.disabled = true
+        return false;
+      }else{
+        uploadBtn.disabled = false
+        return true;
+      }
+    }
+
+  </script>
+</head>
+
+<style type="text/css">
+  .sampleImages{
+    height: 100px;
+    width: 100px;
+    padding: 10px,10px,10px,10px;
+    margin-right: 20px;
+  }
+  .outputImages{
+    height: 200px;
+  }
+  .center {
+    text-align: center
+  }
+  form{
+    align-self: center;
+  }
+</style>
+</style>
+
+<body class="center" style="margin-top: 35px;margin-bottom: 15px;">
+  
+  <h1>Malaria Detection</h1>
+  
+  <form action='upload' onsubmit="VerifyFileNameAndFileSize();" onchange="VerifyFileNameAndFileSize();" id="uploadForm" method="post" enctype="multipart/form-data" style="margin-top: 25px; margin-bottom: 25px;"> 
+    {% csrf_token %}
+    <input type='file' id="imageInput" name="image" accept="image/png">
+    <input type="submit" id="btnSubmit" value="Upload Image" onclick='showLoader();this.disabled = true;'>
+  </form>
+
+  <div id="waitDiv" style="display:none">
+    <p>Please wait for output!</p>                                 
+    <div class="spinner-border"></div>
+  </div>
+ 
+  <br> </br>
+
+  {% load static %}
+  
+  <section id='calculatedResultSection'>
+    <p style="font-size:22px;">{{cell_condition}}</p>
+    {% csrf_token %}
+    <img title="Malaria Cell" src="{{uploaded_pic}}" alt=""><br></br>
+    <img title="Detected Area 1" src="{% static "outputs/output1.png" %}" alt="">
+    <img title="Detected Area 2" src="{% static "outputs/output2.png" %}" alt="">
+    <img title="Detected Area 3" src="{% static "outputs/output3.png" %}" alt="">
+    <p style="font-size:18px;">{{yellow_area}}</p>
+  </section>
+
+  <p style="font-size: 20px;">Sample Images</p>
+  <img class='sampleImages' title="Sample image 1" src="{% static "sample1.png" %}" alt="" padding="20px">
+  <img class='sampleImages' title="Sample image 2" src="{% static "sample2.png" %}" alt="" padding="20px">
+  <img class='sampleImages' title="Sample image 3" src="{% static "sample3.png" %}" alt="" padding="20px">
+  <img class='sampleImages' title="Sample image 4" src="{% static "sample4.png" %}" alt="" padding="20px">
+  <img class='sampleImages' title="Sample image 5" src="{% static "sample5.png" %}" alt="" padding="20px">
+  <br></br>
+
+  <h3 style="text-align-last: center; margin-top: 30px; margin-bottom: 40px;">This site is for research purpose</h3>
+</body>
+</html>
